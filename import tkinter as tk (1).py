@@ -35,23 +35,12 @@ root.geometry("560x420")
 main_frame = tk.Frame(root)
 main_frame.pack(pady=20)
 
-def clear_frame(frame):
-    for widget in frame.winfo_children():
-        widget.destroy()
-
 # --- Chọn người chơi ---
 def choose_player(player_id):
     global user, user_target_items
     user = players[player_id]
     user_target_items = random.sample(range(5), 2)
     show_auction_screen()
-
-def show_player_selection():
-    clear_frame(main_frame)
-    tk.Label(main_frame, text="🧍 Chọn người chơi của bạn", font=("Arial", 14)).pack(pady=10)
-    for i in range(3):
-        tk.Button(main_frame, text=f"Player {i}", font=("Arial", 12),
-                  command=lambda i=i: choose_player(i)).pack(pady=5)
 
 # --- Đấu giá ---
 def submit_bid():
@@ -123,42 +112,6 @@ def next_item():
         show_auction_screen()
     else:
         show_result()
-
-# --- Màn hình đấu giá ---
-def show_auction_screen():
-    clear_frame(main_frame)
-    tk.Label(main_frame, text=f"🎯 Mục tiêu: thắng món {user_target_items[0]} và {user_target_items[1]}",
-             font=("Arial", 12), fg="blue").pack(pady=5)
-    tk.Label(main_frame, text=f"🧍 Bạn là Player {user.id} | 💰 Tiền: {user.money}", font=("Arial", 11)).pack(pady=5)
-
-    tk.Label(main_frame, text=f"💎 Đang đấu giá: {items[current_item]}", font=("Arial", 13, "bold")).pack(pady=10)
-    tk.Label(main_frame, text=f"💵 Giá sàn: {min_prices[current_item]}", font=("Arial", 11)).pack()
-
-    global bid_entry
-    bid_entry = tk.Entry(main_frame, font=("Arial", 12))
-    bid_entry.pack(pady=10)
-
-    tk.Button(main_frame, text="💰 Đặt giá", command=submit_bid).pack(pady=5)
-    tk.Button(main_frame, text="⏭️ Bỏ qua", command=skip_bid).pack(pady=5)
-
-# --- Kết quả ---
-def show_result():
-    clear_frame(main_frame)
-    win_items = set(user.won_items)
-    goal_items = set(user_target_items)
-    matched = win_items & goal_items
-
-    tk.Label(main_frame, text="📊 KẾT QUẢ", font=("Arial", 14, "bold")).pack(pady=10)
-    tk.Label(main_frame, text=f"Bạn đã thắng các món: {sorted(user.won_items)}", font=("Arial", 12)).pack()
-    tk.Label(main_frame, text=f"Mục tiêu cần: {sorted(user_target_items)}", font=("Arial", 12)).pack()
-    tk.Label(main_frame, text=f"Số món mục tiêu đã thắng: {len(matched)}", font=("Arial", 12)).pack()
-
-    if len(matched) >= 2:
-        tk.Label(main_frame, text="🏆 CHÚC MỪNG! BẠN ĐÃ THẮNG!", font=("Arial", 14), fg="green").pack(pady=10)
-    else:
-        tk.Label(main_frame, text="❌ BẠN ĐÃ THUA! HẸN GẶP LẠI.", font=("Arial", 14), fg="red").pack(pady=10)
-
-    tk.Button(main_frame, text="🔁 Chơi lại", command=restart_game).pack(pady=10)
 
 def restart_game():
     global players, user, user_target_items, current_item, user_skipped_last_round, user_interest_score
